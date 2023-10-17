@@ -1,0 +1,1 @@
+git submodule add https://github.com/crossaces/crossace-scss.git src/assets
