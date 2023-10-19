@@ -1,10 +1,12 @@
+import Layout from "../components/layout";
 
 const MyBlog = () => {
   return (
-   <div className='content-container'>
-   
-   <p className="fz-20">MY BLOG</p>     
-   </div>
+    <Layout>
+    <div className='container-layout'>   
+      {/* <p className="fz-20">MY BLOG</p>      */}
+    </div>
+   </Layout>
   );
 };
 

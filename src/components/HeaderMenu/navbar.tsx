@@ -1,35 +1,74 @@
 import { Link } from 'react-router-dom';
 import logo from '@/images/logo.png'
-const Navbar = () => {
+import { useState } from 'react';
+
+const Navbar = () => {  
+  const [isActive, setIsActive] = useState('');
+  const scrollToElement = (elementId: string) => {
+    const element = document.getElementById(elementId);
+    setIsActive(elementId)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };  
+
+  
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  console.log(isMenuOpen)
   return (
-    <div className="navbar">
-      <Link  to="/">        
-        <div className='flex ml-10'>
-          
+    <div className={`navbar ${isMenuOpen ? 'ht-100-max' : ''}`}>          
+      <Link to="/">        
+        <div onClick={() => {
+          scrollToElement('myprofile');
+        }} className='flex ml-10'>          
             <img src={logo} alt="" />
-            <p>Willou</p>
-        
+            <p>Willou</p>        
         </div>
-      </Link>
-      <ul>
-        <li>
-          <Link to="/about">About</Link>
+      </Link> 
+      <div className='menu-toggle' onClick={() => setIsMenuOpen(!isMenuOpen)}>
+        <div className="bar1"/>
+        <div className="bar mt-5"/>          
+        <div className="bar mt-5"/>          
+      </div>    
+      <ul className={`menu ${isMenuOpen ? 'open animation-slide' : ''}`}>
+        <li className={`menu isClickAble animation-child 
+          ${isMenuOpen ? 'open animation-slide' : ''}  
+          ${isActive === 'about' ? 'txt-secondaryS' : 'txt-default'} `} 
+          onClick={() => {
+            scrollToElement('about');
+          }}>
+         About
         </li>
-        <li>
-          <Link to="/skills">Skills</Link>
+        <li className={`menu isClickAble animation-child 
+          ${isMenuOpen ? 'open animation-slide' : ''}  
+          ${isActive === 'skill' ? 'txt-secondaryS' : 'txt-default'} `} 
+          onClick={() => {
+            scrollToElement('skill');
+        }}>
+          Skills
         </li>
-        <li>
-          <Link to="/projects">Projects</Link>
+        <li className={`menu isClickAble animation-child 
+          ${isMenuOpen ? 'open animation-slide' : ''}  
+          ${isActive === 'project' ? 'txt-secondaryS' : 'txt-default'} `} 
+          onClick={() => {
+            scrollToElement('project');
+        }}>
+          Projects
         </li>
-        <li>
-          <Link to="/contacs">Contacts</Link>
+        <li className={`menu isClickAble animation-child 
+          ${isMenuOpen ? 'open animation-slide' : ''}  
+          ${isActive === 'contact' ? 'txt-secondaryS' : 'txt-default'} `} 
+          onClick={() => {
+            scrollToElement('contact');
+        }}>
+          Contacts
         </li>
-      </ul>
-      <div className='mr-10'>
+      </ul>      
+      <div className={`menu mr-10 ${isMenuOpen ? 'open animation-slide ptb-10' : ''}`}>
          <Link to="/myblog">
-           <button className='primary-filled-btn plr-40'>My Blog</button>
+           <button className='primary-filled-btn plr-40 animation-child'>My Blog</button>
          </Link>
-      </div>
+      </div>    
     </div>
   );
 };
