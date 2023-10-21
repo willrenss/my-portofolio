@@ -1,8 +1,12 @@
-import { RouterProvider } from "react-router-dom";
-import { router } from "./routes"
+import { Suspense } from 'react'
+import routes from '~react-pages'
 
 const App = () => {
-  return <RouterProvider router={router} />;
-};
+  return (
+    <Suspense>
+      {useRoutes(routes)}
+    </Suspense>
+  )
+}
 
 export default App

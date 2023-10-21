@@ -1,11 +1,14 @@
 
 import logo from '@/images/logo.png'
 
-const Footer = () => {  
+const Footer = () => {
   return (
-    <div className='footer txt-primary'>      
-         <img  src={logo} alt="" />
-         <p className='fz-11 fw-500 mt-5'>Willou</p>
+    <div className='footer txt-primary'>
+      <p className='fw-500 fz-20'>Copyright ©2023</p>
+      <div className='fullCenter-flex mt-5'>
+        <img src={logo} alt="" />
+        <p className='fz-11 fw-500 ml-5'>Willou</p>
+      </div>
     </div>
   );
 };
