@@ -1,1 +1,0 @@
-import{u as t,j as s,L as o}from"./index-5de5120f.js";const e=()=>{const{data:a}=t();return s.jsx(o,{children:s.jsxs("div",{className:"container-layout",children:["my blog ",a]})})};export{e as default};
