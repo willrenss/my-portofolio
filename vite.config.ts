@@ -1,13 +1,23 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react-swc'
 import Pages from 'vite-plugin-pages'
 import AutoImport from 'unplugin-auto-import/vite'
 import path from 'path'
 import Checker from 'vite-plugin-checker';
 // https://vitejs.dev/config/
-export default defineConfig({
+export default({ mode }) => {
+  process.env = { ...process.env, ...loadEnv(mode, process.cwd()) }
+  return defineConfig({
+  base: process.env.VITE_PATH,
+  mode: process.env.NODE_ENV,
+  build: {
+    outDir: path.resolve(__dirname, process.env.VITE_OUTPUT_DIR || './dist'),
+    emptyOutDir: false,
+  },
   plugins: [  
-  react(),
+  react({     
+    tsDecorators: true 
+  }),
   Checker({ typescript: true }),
   Pages({
     extensions: ['tsx'],
@@ -21,19 +31,7 @@ export default defineConfig({
     ],
     dts: 'src/auto-imports.d.ts',
   }),
-
-
   ],
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          react: ['react'],
-          'react-dom': ['react-dom'],
-        },
-      },
-    },
-  },
   resolve: {
       alias: {
         '~/': `${path.resolve(__dirname,'src')}/`,
@@ -41,5 +39,5 @@ export default defineConfig({
         '@components/':`${path.resolve(__dirname,'src/components')}/` 
       },
     },
-})
-
+  })
+}
