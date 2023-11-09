@@ -1,13 +1,19 @@
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import '@/styles/main.scss'
-// import '@components/index.tsx'
-import {
-  BrowserRouter as Router
-} from 'react-router-dom'
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <Router>
+
+
+const client = new ApolloClient({  
+  cache: new InMemoryCache(),
+  uri: import.meta.env.VITE_API
+}); 
+
+
+const root = ReactDOM.createRoot(document.getElementById('root')!);
+root.render(
+  <ApolloProvider client={client}>
     <App />
-  </Router>,
-)
+  </ApolloProvider>,
+);

@@ -14,9 +14,13 @@ export default({ mode }) => {
     outDir: path.resolve(__dirname, process.env.VITE_OUTPUT_DIR || './dist'),
     emptyOutDir: false,
   },
+  optimizeDeps: {
+      include: ['@emotion/react', '@emotion/styled'],
+  },
   plugins: [  
   react({     
-    tsDecorators: true 
+    tsDecorators: true,
+    jsxImportSource: "@emotion/react",
   }),
   Checker({ typescript: true }),
   Pages({
@@ -25,8 +29,7 @@ export default({ mode }) => {
 
   AutoImport({
     imports: [
-      'react',
-      // 'react-router',
+      'react',      
       'react-router-dom',
     ],
     dts: 'src/auto-imports.d.ts',

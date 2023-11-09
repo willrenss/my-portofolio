@@ -1,12 +1,13 @@
-import { ReactNode } from 'react';
 import { Navbar, Footer } from '..';
+export interface LayoutProps {
+  children: React.ReactNode
+}
 
-
-const Layout = ({ children }: { children: ReactNode }) => {
+const Layout = (props:LayoutProps) => {
   return (
     <div>
       <Navbar />
-      <main>{children}</main>
+      <main>{props.children}</main>
       <Footer />
     </div>
   );

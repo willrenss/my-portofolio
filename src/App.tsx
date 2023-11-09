@@ -1,12 +1,11 @@
-import { Suspense } from 'react'
 import routes from '~react-pages'
+import {  RouterProvider, createBrowserRouter } from 'react-router-dom';
+const router = createBrowserRouter(routes)
 
 const App = () => {
   return (
-    <Suspense>
-      {useRoutes(routes)}
-    </Suspense>
-  )
+    <RouterProvider router={router}/>
+  );
 }
 
 export default App
