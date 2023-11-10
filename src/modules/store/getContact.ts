@@ -2,10 +2,12 @@ import { useQuery, gql } from '@apollo/client';
 
 export interface Contact {
     first_name: string;
-    last_name: number;
+    last_name: string;
     created_at: string;
     id: number;
-    phones: [];
+    phones: [{
+      number: string
+    }];
 }
 export const getContact = gql`
 query GetContactList (
@@ -36,7 +38,6 @@ query GetContactList (
 
 export const useGetContact = (request: object) => {
   const { loading, error, data } = useQuery(getContact, { variables: request });
-
   if (loading) {
     return { loading: true, data: null, error: null };
   }
@@ -46,5 +47,5 @@ export const useGetContact = (request: object) => {
   }
 
 
-  return { loading: false, data, error: null };
+  return { loading: false, data, error: null, count: data.contact.length };
 };

@@ -2,7 +2,7 @@ import { css } from '@emotion/react'
 const navbarStyle = {
   background: css({
     backgroundColor: 'var(--primary)',   
-    minHeight: '100px',
+    minHeight: '80px',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
