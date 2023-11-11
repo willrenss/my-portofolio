@@ -38,14 +38,15 @@ query GetContactList (
 
 export const useGetContact = (request: object) => {
   const { loading, error, data } = useQuery(getContact, { variables: request });
+  const { data:total } = useQuery(getContact, { variables: {} });
   if (loading) {
-    return { loading: true, data: null, error: null };
+    return { loading: true, data: null, error: null, count: total?.contact?.length };
   }
 
   if (error) {
-    return { loading: false, data: null, error: `Error! ${error.message}` };
+    return { loading: false, data: null, error: `Error! ${error.message}`, count: total?.contact?.length };
   }
 
 
-  return { loading: false, data, error: null, count: data.contact.length };
+  return { loading: false, data, error: null, count: total?.contact?.length };
 };

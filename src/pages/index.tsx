@@ -7,6 +7,12 @@ import { Container, ContanctList } from '../components/layout/container';
 import { getColorFromName } from '../modules/function/getRandomColor';
 import { mq } from '../components/Composables/mediaQuery';
 import { fullCenterColumn} from '../style/flex';
+import arrowLeft from '@/icons/arrow-left-bold.svg';
+import arrowRight from '@/icons/arrow-right-bold.svg';
+import Dropdown from '../components/Composables/dropdown';
+import Modal from '../components/Composables/modal';
+import { IconButtonStyle } from '../components/Composables/iconButton';
+import { ButtonStyle } from '../components/Composables/button';
 
 
 //style
@@ -39,10 +45,21 @@ const EmptyDataStyle = styled.div({
   },
 })
 
+const ContentHeader = styled.div({
+  display: 'flex',
+  alignItems: 'center',
+  [mq[2]]: {
+   flexWrap: 'wrap'
+  },
+})
+
 const Pagination = styled.div({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
   minWidth: '600px',
-  maxWidth: '600px',
-  height: '35px',
+  maxWidth: '600px',  
+  padding: '5px',
   borderRadius: '5px',
   border: '1px solid var(--gray-border)', 
   backgroundColor:'var(--white)',
@@ -63,62 +80,145 @@ const Pagination = styled.div({
 })
 
 
+const DropdownPaginationStyle = styled.div({
+  minWidth: '56px',
+  maxWidth: '56px', 
+})
+
+const PagesStyle = styled.div({
+  display: 'flex',
+  alignItems: 'center',
+  p:{
+    padding: '10px 10px',
+    color: 'var(--disabled)',
+    fontSize: '14px'
+  }, 
+})
 
 
 //layout
 const Home = () => {
-  //state
-  const[contactData, setContactData] = useState([])
+  //stateData
+  const [contactData, setContactData] = useState([])
+
+  //statePagination
+  const [countData, setCountData] = useState(0)
+  const [countPage, setCountPage] = useState(1)
+  const [searchData, setSearchData] = useState('')
+  const [limitData, setLimitData] = useState(10)
+  const [offsetData, setOffsetData] = useState(0)
+
+  //stateComponent
+  const [modal, setModal] = useState(false)
+  //requestData
   const [request, setRequest] = useState({
-    where: {},  
-    limit: 10,
+    where: {},
+    limit: limitData,
+    offset: offsetData,
     order_by: {
       first_name: 'asc'
     }
   })
+ 
 
-  // search
-  const handleSearch = (keyword: string | number) => {   
-    
+  const handleSetRequest = (offset: number, search: string | number, limit: number) => {
     setRequest((prevRequest) => ({
       ...prevRequest,
       where: {
         _or: [
-          {first_name: { _ilike: `%${keyword}%` }},
-          {last_name: { _ilike: `%${keyword}%` }},
+          { first_name: { _ilike: `%${search}%` } },
+          { last_name: { _ilike: `%${search}%` } },
         ]
-      }, 
-      limit: 10,     
-      order_by: {
-        first_name: 'asc'
-      }
+      },
+      offset: offset,
+      limit: limit,     
     }))
   }
 
+  //modalComponent
+
+  //search
+  const handleSearch = (keyword: string | number) => {    
+    setSearchData(keyword.toString())
+    handleSetRequest(0, keyword, limitData)
+  }
+
+  //paginationLimit
+  const handleLimitData = (value: number) => {    
+    setLimitData(value)
+    setOffsetData(0)
+    setCountPage(1)
+    handleSetRequest(0, searchData, value)
+  }
+
+ 
+  //paginationButtonOffset
+  const handlePagination =  async (info: string, offset: number) => {
+    if(info === 'previous')
+      setCountPage(countPage - 1)
+    else
+      setCountPage(countPage + 1)      
+    
+    setOffsetData(offset)
+    handleSetRequest(offset, searchData, limitData)
+    
+    if(offset < 0)
+      setOffsetData(0)
+
+   
+  }
+  
   //api
-  const { loading, data, error } = useGetContact(request);
+  const { loading, data, error, count } = useGetContact(request);
 
   //setLocal || getLocal
   useEffect(() => {
     if (!loading && data) {
       setContactData(data.contact || []);
+      setCountData(count);
       localStorage.setItem('contact', JSON.stringify(data.contact))
     }
     else{
       const storedData = localStorage.getItem('contact');
+      setCountData(count);
       const parsedData = storedData ? JSON.parse(storedData) : [];
       setContactData(parsedData);
     }
-  }, [loading, data, error]);
+  }, [loading, data, error, count]);
 
 return (
     <Layout>     
-      <Container>
+    <Modal title='Add Contact' closeModal={e => setModal(e)} isOpen={modal} 
+    
+      content={
+        <><Input
+          type="text"
+          sendChange={handleSearch}
+          placeHolder='Search Contact'
+          />
         <Input
-          type="text"         
+          type="text"
           sendChange={handleSearch}
           placeHolder='Search Contact'
         />
+        <Input
+          type="text"
+          sendChange={handleSearch}
+          placeHolder='Search Contact'
+        ></Input>
+        </>
+      }
+    />  
+           
+      <Container>
+        <ContentHeader>
+          <Input
+            type="text"         
+            sendChange={handleSearch}
+            placeHolder='Search Contact'
+          />
+        <ButtonStyle size='20%' color='primary' radius='5px' content='20%' onClick={() => setModal(!modal)} > Add Contact</ButtonStyle>
+        </ContentHeader>       
         {contactData.length <= 0 ? 
           <EmptyDataStyle css={fullCenterColumn}>
             <img src={empty} alt="SVG Image" />
@@ -128,18 +228,39 @@ return (
           {contactData.map((_c: Contact, index: number) => {
             const previousItem = index > 0 ? contactData[index - 1] : _c;
             return (
-              <div key={_c.id}>
-                <PhoneList item={_c} index={index} preItem={previousItem} randomColor={getColorFromName(_c.first_name, _c.last_name)} />
+              <div key={_c.id}>                
+                <PhoneList item={_c} index={index} preItem={previousItem} randomColor={getColorFromName(_c.first_name, _c.phones[0]?.number, _c.last_name)} />
               </div>
             );
           })}
           <Pagination>
-            <div>
+            <DropdownPaginationStyle>
+              <Dropdown
+                defaultValue={limitData != 10 ? limitData : 10}
+                options={[100, 50, 25, 10, 5]}
+                onSelect={selectedOption => handleLimitData(Number(selectedOption))}
 
-            </div>
-            <div>
-
-            </div>
+              />
+            </DropdownPaginationStyle>           
+            <PagesStyle>
+              <IconButtonStyle 
+                size={25}
+                minMax={15} 
+                color={offsetData === 0 ? 'neutral' : 'primary'} 
+                disabled={offsetData === 0 ? true : false} 
+                radius='100%'>
+                  <img src={arrowLeft} alt="SVG Image" onClick={() => handlePagination('previous', offsetData - limitData)}/>
+                </IconButtonStyle>
+              <p>{countPage}</p>
+              <IconButtonStyle 
+                size={25}
+                minMax={15} 
+                color={countData <= limitData + offsetData ? 'neutral' : 'primary'} 
+                disabled={contactData.length < limitData ? true : false} 
+                radius='100%'>
+                  <img src={arrowRight} alt="SVG Image" onClick={() => handlePagination('next', offsetData + limitData)} />
+               </IconButtonStyle>    
+            </PagesStyle>           
           </Pagination>
         </ContanctList>
         }              
@@ -148,4 +269,4 @@ return (
   );
 };
 
-export default Home;
+export default Home

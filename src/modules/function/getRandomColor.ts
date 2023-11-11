@@ -7,8 +7,8 @@ const stringToHue = (str: string) => {
     return hue;
 }
 
-export const getColorFromName = (firstName: string, lastName: string) => {
-    const combinedName = `${firstName}${lastName}`
+export const getColorFromName = (firstName: string, phone: string , lastName: string) => {
+    const combinedName = `${firstName}${phone}${lastName}`
     const hue = stringToHue(combinedName)
 
     const color = `hsl(${hue}, 50%, 60%)`;

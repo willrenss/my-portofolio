@@ -15,6 +15,7 @@ export const fullFlexCenter = css({
     justifyContent: 'center',
 })
 
+
 export const fullCenterColumn = css({
     display: 'flex',
     flexDirection: 'column',
