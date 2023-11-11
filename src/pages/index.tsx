@@ -81,8 +81,25 @@ const Pagination = styled.div({
 
 
 const DropdownPaginationStyle = styled.div({
-  minWidth: '56px',
-  maxWidth: '56px', 
+  minWidth: '255px',
+  maxWidth: '255px', 
+  display: 'flex',
+  alignItems: 'center',
+  'p:nth-of-type(1)': {
+    minWidth: '34px',
+    color: 'var(--disabled)',
+    fontSize: '12px'
+  },
+  'p:nth-of-type(2)': {
+    minWidth: '34px',
+    color: 'var(--disabled)',
+    fontSize: '12px'
+  },
+  'div:first-of-type': {
+    minWidth: '56px',
+    maxWidth: '56px', 
+    margin: '0px 5px'
+  }
 })
 
 const PagesStyle = styled.div({
@@ -194,17 +211,17 @@ return (
         <><Input
           type="text"
           sendChange={handleSearch}
-          placeHolder='Search Contact'
+          placeHolder='First Name'
           />
         <Input
           type="text"
           sendChange={handleSearch}
-          placeHolder='Search Contact'
+          placeHolder='Last Name'
         />
         <Input
           type="text"
           sendChange={handleSearch}
-          placeHolder='Search Contact'
+          placeHolder='Phone'
         ></Input>
         </>
       }
@@ -235,12 +252,13 @@ return (
           })}
           <Pagination>
             <DropdownPaginationStyle>
+              <p>Items per page</p>
               <Dropdown
                 defaultValue={limitData != 10 ? limitData : 10}
                 options={[100, 50, 25, 10, 5]}
                 onSelect={selectedOption => handleLimitData(Number(selectedOption))}
-
               />
+              <p>{`${offsetData + 1} - ${countData <= limitData + offsetData ?  countData : limitData + offsetData} of ${countData} items`}</p>
             </DropdownPaginationStyle>           
             <PagesStyle>
               <IconButtonStyle 
@@ -256,7 +274,7 @@ return (
                 size={25}
                 minMax={15} 
                 color={countData <= limitData + offsetData ? 'neutral' : 'primary'} 
-                disabled={contactData.length < limitData ? true : false} 
+                disabled={countData <= limitData + offsetData ? true : false} 
                 radius='100%'>
                   <img src={arrowRight} alt="SVG Image" onClick={() => handlePagination('next', offsetData + limitData)} />
                </IconButtonStyle>    

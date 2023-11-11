@@ -168,17 +168,25 @@ const openWhatsAppLink = (phoneNumber: string) => {
     window.location.href = `https://wa.me/${phoneNumber}`;
 };
 
+const getFirstNonSpaceCharacter = (inputString: string) => {
+    const trimmedString = inputString.trim();
+    if (trimmedString.length === 0) {
+        return null; // Mengembalikan null jika seluruh string hanya berisi spasi
+    }
+    return trimmedString[0];
+}
+
 //Component
 const PhoneList = ({ item, index, preItem, randomColor }: PhoneListProps) => (
     <PhoneStyle>          
         {
-            (item.first_name?.[0] || '?').toLowerCase() !== (preItem.first_name?.[0] || '?').toLowerCase() || index == 0 ? (
+            (getFirstNonSpaceCharacter(item.first_name) || '?').toLowerCase() !== (getFirstNonSpaceCharacter(preItem.first_name) || '?').toLowerCase() || index == 0 ? (
             <FontHeaderStyle color='white' theme='third' lang='0'>{(item.first_name?.[0] || '?').toLocaleUpperCase()}</FontHeaderStyle>) : 
-            <FontHeaderStyle color='gray-bg' theme='none' lang='8'> </FontHeaderStyle>
+            <FontHeaderStyle color='gray-bg' theme='none' lang='0'> </FontHeaderStyle>
         }                   
         <ContactStyle css={[flexCenter, isExpand]}>        
                 <RoundedContactStyle color={randomColor} css={fullFlexCenter}>
-                {(item.first_name?.[0] || '').toLocaleUpperCase()}{(item.last_name?.[0] || '').toLocaleUpperCase()}
+                {(getFirstNonSpaceCharacter(item.first_name) || '').toLocaleUpperCase()}{(getFirstNonSpaceCharacter(item.last_name) || '').toLocaleUpperCase()}
                 </RoundedContactStyle>
                 <NameContactStyle css={isExpand}>
                     <div>
