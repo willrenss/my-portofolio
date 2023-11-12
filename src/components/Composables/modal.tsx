@@ -69,11 +69,39 @@ const ModalHeader = styled.div({
 
 const ModalContent = styled.div({   
     backgroundColor: 'white',
-    padding: '20px',
-    borderRadius: '0px 0px 5px 5px',
+    padding: '15px 20px',
+    borderRadius: '0px 0px 0px 0px',
     minWidth: '600px',
     boxSizing:'border-box',
     maxWidth: '600px',
+    transition: 'all 0.25s ease-out',   
+    [mq[2]]: {
+        minWidth: '550px',
+        maxWidth: '550px',
+    },
+    [mq[1]]: {
+        minWidth: '350px',
+        maxWidth: '350px',
+    },
+    [mq[0]]: {
+        minWidth: '250px',
+        maxWidth: '250px',
+    },
+});
+
+const ModalAction = styled.div({
+    display:'flex',
+    alignItems: 'center',
+    justifyContent:'end',
+    backgroundColor: 'var(--gray-bg)',
+    padding: '10px',
+    flexWrap:'wrap',
+    borderRadius: '0px 0px 5px 5px',
+    width:'100%',
+    minWidth: '600px',
+    maxWidth: '600px',
+    borderTop: '1px solid var(--neutral-bg)',
+    boxSizing: 'border-box',   
     transition: 'all 0.25s ease-out',
     [mq[2]]: {
         minWidth: '550px',
@@ -110,9 +138,9 @@ const Modal = ({ isOpen, action, content, title, closeModal }: ModalProps) => {
                 <ModalContent>
                     {content}
                 </ModalContent>      
-                <div>
-                    {action}
-                </div>     
+                <ModalAction>
+                        {action}
+                </ModalAction>     
         </ModalContainer>
     );
 };

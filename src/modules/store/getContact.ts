@@ -9,6 +9,11 @@ export interface Contact {
       number: string
     }];
 }
+
+export interface Phone {
+    number: string  
+}
+
 export const getContact = gql`
 query GetContactList (
     $distinct_on: [contact_select_column!], 

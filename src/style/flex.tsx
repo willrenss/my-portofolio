@@ -15,6 +15,11 @@ export const fullFlexCenter = css({
     justifyContent: 'center',
 })
 
+export const justifyContentEnd = css({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent:'end'
+})
 
 export const fullCenterColumn = css({
     display: 'flex',

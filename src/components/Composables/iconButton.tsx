@@ -44,4 +44,4 @@ export const IconButtonStyle = styled.button<IconButtonStyleProps> (
             }
         },
     })
-);
+)
