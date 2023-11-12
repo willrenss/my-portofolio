@@ -7,7 +7,7 @@ import plus from '@/icons/plus.svg';
 import Input from '../components/Composables/input';
 import { Container, ContanctList } from '../components/layout/container';
 import { getColorFromName } from '../modules/function/getRandomColor';
-import { fullCenterColumn} from '../style/flex';
+import { fullCenterColumn, fullFlexCenter} from '../style/flex';
 import arrowLeft from '@/icons/arrow-left-bold.svg';
 import arrowRight from '@/icons/arrow-right-bold.svg';
 import Dropdown from '../components/Composables/dropdown';
@@ -17,6 +17,8 @@ import { ButtonStyle } from '../components/Composables/button';
 import { getCountDataStorage, getCountPageDataStorage, getLimitDataStorage, getLocalStorage, getOffsetDataStorage, getSearchStorage } from '../modules/store/localStorage';
 import Alert from '../components/Composables/alert';
 import { useAddContact } from '../modules/store/addDataContacts';
+import { favFix } from '../modules/function/functionFav';
+import { isExpand } from '../style/width';
 
 //style
 export const EmptyDataStyle = styled.div({
@@ -50,11 +52,42 @@ export const EmptyDataStyle = styled.div({
 
 export const ContentHeader = styled.div({
   display: 'flex',
+  boxSizing: 'border-box',
   alignItems: 'center',
+  minWidth: '600px',
+  maxWidth: '600px',
+  transition: 'all 0.25s ease-out',
   [mq[2]]: {
+    minWidth: '550px',
+    maxWidth: '550px',
    flexWrap: 'wrap'
+  }, 
+  [mq[1]]: {
+    minWidth: '350px',
+    maxWidth: '350px',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
+  [mq[0]]: {
+    minWidth: '250px',
+    maxWidth: '250px',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
   },
 })
+
+const RoundedContactStyle = styled.div({  
+  borderRadius: '100%',
+  padding: '10px',
+  marginBottom: '20px',
+  color: 'white',
+  fontWeight: 500,
+  minWidth: '50px',
+  maxWidth: '50px',
+  maxHeight: '50px',
+  minHeight: '50px',
+  transition: 'all 0.25s ease-out',
+}, props => ({ backgroundColor: props.color }))
 
 export const Pagination = styled.div({
   display: 'flex',
@@ -171,7 +204,13 @@ export const ButtonAddContainer = styled.div({
   width:'100%'
 })
 
-
+const getFirstNonSpaceCharacter = (inputString: string) => {
+  const trimmedString = inputString.trim();
+  if (trimmedString.length === 0) {
+    return null;
+  }
+  return trimmedString[0];
+}
 
 //layout
 export const Home = () => {
@@ -382,8 +421,14 @@ export const Home = () => {
         <div>{alertMsg}</div>
       </Alert>
       <Modal title='Add Contact' closeModal={e => setModal(e)} isOpen={modal}
+     
         content={<>
-          <ContainerInputName>
+        <div css={[isExpand, fullFlexCenter]}>
+            <RoundedContactStyle color={getColorFromName(firstName, '', lastName)} css={fullFlexCenter}>
+              {(getFirstNonSpaceCharacter(favFix(firstName)) || '').toLocaleUpperCase()}{(getFirstNonSpaceCharacter(lastName) || '').toLocaleUpperCase()}
+            </RoundedContactStyle>
+        </div>          
+          <ContainerInputName>            
             <Input
               type="text"
               label='First Name'
@@ -417,7 +462,7 @@ export const Home = () => {
             <IconButtonStyle
               size={25}
               minMax={15}
-              color='success'
+              color='secondary'
               radius='100%' onClick={addPhoneNumber}>
               <img src={plus} alt="SVG Image" />
             </IconButtonStyle>

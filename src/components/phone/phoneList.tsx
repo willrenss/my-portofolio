@@ -10,6 +10,7 @@ import phone from '@/icons/phone.svg';
 import heart from '@/icons/heart.svg';
 import { useEditContact } from '../../modules/store/editContact';
 import { useDeleteContact } from '../../modules/store/deleteContacts';
+import { favFix, getFirstNonSpaceCharacter, isFavorite } from '../../modules/function/functionFav';
 
 //props
 export interface PhoneListProps {
@@ -175,26 +176,7 @@ const openWhatsAppLink = (phoneNumber: string) => {
     window.location.href = `https://wa.me/${phoneNumber}`;
 };
 
-const getFirstNonSpaceCharacter = (inputString: string) => {
-    const trimmedString = inputString.trim();
-    if (trimmedString.length === 0) {
-        return null;
-    }
-    return trimmedString[0];
-}
 
-const isFavorite = (char: string) => {
-    const favRegex = /^0@/
-    return favRegex.test(char)
-}
-
-const favFix = (char: string) => {
-    const favRegex = /^0@/;
-    if(isFavorite(char))
-        return char.replace(favRegex, "");
-    else
-        return char
-}
 
 //Component
 const PhoneList = ({ item, index, preItem, randomColor, onMutationCompleted, onDeleteContact }: PhoneListProps) => {
@@ -261,10 +243,6 @@ const PhoneList = ({ item, index, preItem, randomColor, onMutationCompleted, onD
         onMutationCompleted(true);
         
     }
-
-
-    
-
 
     //edit
     return (

@@ -38,7 +38,7 @@ const ModalContainer = styled.div<ModalContainerProps>(
 const ModalHeader = styled.div({
     display: 'flex',
     alignItems: 'center',
-    height: 'auto',
+    height: '60px',
     background: 'var(--primary)',
     boxSizing: 'border-box',
     minWidth: '600px',
@@ -68,7 +68,7 @@ const ModalHeader = styled.div({
 
 
 const ModalContent = styled.div({   
-    backgroundColor: 'white',
+    backgroundColor: 'white',  
     padding: '15px 20px',
     borderRadius: '0px 0px 0px 0px',
     minWidth: '600px',
