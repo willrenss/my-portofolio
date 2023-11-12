@@ -7,6 +7,7 @@ import { mq } from '../Composables/mediaQuery';
 import trash from '@/icons/trash.svg';
 import pencil from '@/icons/pencil.svg';
 import phone from '@/icons/phone.svg';
+import heart from '@/icons/heart.svg';
 //props
 export interface PhoneListProps {
     item: Contact
@@ -158,6 +159,7 @@ const phoneRow = {
         padding: '10px 5px',       
     }),
     number: css({
+        marginTop: '5px',
         color: 'var(--disabled)',
         fontWeight: 400,
         fontSize: '12px',       
@@ -171,26 +173,43 @@ const openWhatsAppLink = (phoneNumber: string) => {
 const getFirstNonSpaceCharacter = (inputString: string) => {
     const trimmedString = inputString.trim();
     if (trimmedString.length === 0) {
-        return null; // Mengembalikan null jika seluruh string hanya berisi spasi
+        return null;
     }
     return trimmedString[0];
 }
 
+const isUnicodeCharacter = (char: string) => {
+    const favRegex = /^0@/
+    return favRegex.test(char)
+}
+
+const favFix = (char: string) => {
+    const favRegex = /^0@/;
+    if(isUnicodeCharacter(char))
+        return char.replace(favRegex, "");
+    else
+        return char
+}
+
+
+
+
+
 //Component
 const PhoneList = ({ item, index, preItem, randomColor }: PhoneListProps) => (
-    <PhoneStyle>          
-        {
-            (getFirstNonSpaceCharacter(item.first_name) || '?').toLowerCase() !== (getFirstNonSpaceCharacter(preItem.first_name) || '?').toLowerCase() || index == 0 ? (
-            <FontHeaderStyle color='white' theme='third' lang='0'>{(item.first_name?.[0] || '?').toLocaleUpperCase()}</FontHeaderStyle>) : 
+    <PhoneStyle>             
+        {             
+            (getFirstNonSpaceCharacter(item.first_name) || ' ').toLowerCase() !== (getFirstNonSpaceCharacter(preItem.first_name) || ' ').toLowerCase() || index == 0  ?  (
+                <FontHeaderStyle color='white' theme='third' lang='0'>{isUnicodeCharacter(item.first_name) ? '❤' : (getFirstNonSpaceCharacter(item.first_name) || ' ').toLocaleUpperCase()}</FontHeaderStyle>) : 
             <FontHeaderStyle color='gray-bg' theme='none' lang='0'> </FontHeaderStyle>
         }                   
         <ContactStyle css={[flexCenter, isExpand]}>        
                 <RoundedContactStyle color={randomColor} css={fullFlexCenter}>
-                {(getFirstNonSpaceCharacter(item.first_name) || '').toLocaleUpperCase()}{(getFirstNonSpaceCharacter(item.last_name) || '').toLocaleUpperCase()}
+                {(getFirstNonSpaceCharacter(favFix(item.first_name)) || '').toLocaleUpperCase()}{(getFirstNonSpaceCharacter(item.last_name) || '').toLocaleUpperCase()}
                 </RoundedContactStyle>
                 <NameContactStyle css={isExpand}>
                     <div>
-                        {capitalizeFirstLetter(item.first_name)} {capitalizeFirstLetter(item.last_name)}
+                        {capitalizeFirstLetter(favFix(item.first_name))} {capitalizeFirstLetter(item.last_name)}
                     </div>
                     <div css={phoneRow.number}>
                         {item.phones[0] && item.phones[0].number ? item.phones[0].number : '-'}
@@ -198,6 +217,7 @@ const PhoneList = ({ item, index, preItem, randomColor }: PhoneListProps) => (
                 </NameContactStyle>                
             <ButtonStyle color='success' lang='5px 0 0 5px' onClick={() => openWhatsAppLink(item.phones[0].number)} ><img src={phone} alt="SVG Image"/></ButtonStyle>
             <ButtonStyle color='info' lang='0px'><img src={pencil} alt="SVG Image"/></ButtonStyle>
+            <ButtonStyle color='favorite' lang='0px'><img src={heart} alt="SVG Image" /></ButtonStyle>
             <ButtonStyle color='error' lang='0 5px 5px 0'><img src={trash} alt="SVG Image"/></ButtonStyle>                                  
         </ContactStyle>
                
