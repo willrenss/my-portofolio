@@ -87,13 +87,16 @@ const ModalContent = styled.div({
     [mq[2]]: {
         minWidth: '550px',
         maxWidth: '550px',
+        maxHeight: '350px', 
     },
     [mq[1]]: {
         minWidth: '350px',
         maxWidth: '350px',
+        maxHeight: '350px', 
     },
     [mq[0]]: {
         minWidth: '250px',
+        maxHeight: '350px', 
         maxWidth: '250px',
     },
 });

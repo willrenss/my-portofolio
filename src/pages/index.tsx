@@ -246,6 +246,10 @@ export const Home = () => {
     number: ''
   }]);
 
+  const [phone, setPhone] = useState([{    
+    number: ''
+  }]);
+
   const { addC } = useAddContact({})
   const { editFav } = useEditContact({})
   const { editP } = useEditPhone({})
@@ -328,21 +332,16 @@ export const Home = () => {
   };
 
   const handlePhoneChange = (e:string | number, index:number) => {
-    const newPhoneNumbers = [...phoneNumbers];
+    const newPhoneNumbers = [...phone];
     newPhoneNumbers[index].number = e.toString();
-    setPhoneNumbers(newPhoneNumbers);
+    setPhone(newPhoneNumbers);
   };
 
   const addPhoneNumber = () => {
-    const newPhoneNumbers = [...phoneNumbers, {
-      number: '', 
-      contact: {
-        first_name: '',
-        last_name: '',
-        id: 0
-      },
-}];
-    setPhoneNumbers(newPhoneNumbers);
+    const newPhoneNumbers = [...phone, {
+      number: '',
+    }];
+    setPhone(newPhoneNumbers);
   };
 
 
@@ -399,13 +398,8 @@ export const Home = () => {
     setModal(modal)
     setFirstName('')
     setLastName('')
-    setPhoneNumbers([{
-      number: '',
-      contact: {
-      first_name: '',
-      last_name: '',
-      id: 0
-      },
+    setPhone([{
+      number: '',     
     }])
   }
 
@@ -625,11 +619,11 @@ export const Home = () => {
               sendChange={(e) => handlerLastName(e.toString())}
               placeHolder='Last Name' />
             </ContainerInputName>
-          {phoneNumbers.map((phoneNumber: Phone, index: number) => (
+          {phone.map((phoneNumber: Phone, index: number) => (
             <Input
               key={index}
               type="text"
-              label={`Phone ${index + 1}`}
+              label={`Phone ${index + 1}`}              
               regex={/^(?:\+62|0)[0-9]{9,13}$/}
               errorMsg='Phonenumber Not Valid'
               value={phoneNumber.number}
@@ -651,7 +645,7 @@ export const Home = () => {
         action = {
           <>        
             <ButtonStyle size='20%' color='secondary' radius='5px' content='20%' onClick={() => setModal('')}> Cancel</ButtonStyle>
-            <ButtonStyle size='20%' color='primary' radius='5px' content='20%' onClick={ ()=> hanlderAddData(firstName,lastName, phoneNumbers)}> Add </ButtonStyle>                 
+            <ButtonStyle size='20%' color='primary' radius='5px' content='20%' onClick={ ()=> hanlderAddData(firstName,lastName, phone)}> Add </ButtonStyle>                 
           </>
         }/>     
 
