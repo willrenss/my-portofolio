@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import { mq } from '../components/Composables/mediaQuery';
 import { Layout, PhoneList } from '../components';
-import { Contact, Phone, useGetContact } from '../modules/store/getContact';
+import { Contact, Phone, PhoneObj, useGetContact, useGetPhoneList } from '../modules/store/getContact';
 import empty from '@/icons/empty.svg';
 import plus from '@/icons/plus.svg';
 import Input from '../components/Composables/input';
@@ -19,6 +19,8 @@ import Alert from '../components/Composables/alert';
 import { useAddContact } from '../modules/store/addDataContacts';
 import { favFix } from '../modules/function/functionFav';
 import { isExpand } from '../style/width';
+import { useEditContact } from '../modules/store/editContact';
+import { useEditPhone } from '../modules/store/editPhone';
 
 //style
 export const EmptyDataStyle = styled.div({
@@ -75,6 +77,7 @@ export const ContentHeader = styled.div({
     justifyContent: 'center',
   },
 })
+
 
 const RoundedContactStyle = styled.div({  
   borderRadius: '100%',
@@ -227,13 +230,75 @@ export const Home = () => {
   const [limitData, setLimitData] = useState(getLimitDataStorage);
   const [offsetData, setOffsetData] = useState(getOffsetDataStorage);
  
-  //Add Data
+  //addEditData
+  const [id, setID] = useState(0);
+  const [idContact, setIDContact] = useState(0);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [newPhone, setNewPhone] = useState('');
+  const [lastPhone, setLastPhone] = useState('');
   const [phoneNumbers, setPhoneNumbers] = useState([{
+    contact: {
+      first_name: '',
+      last_name: '',
+      id: 0
+    },
     number: ''
   }]);
+
   const { addC } = useAddContact({})
+  const { editFav } = useEditContact({})
+  const { editP } = useEditPhone({})
+  const handlerEditData = (firstName: string, lastName: string) => {
+    editFav({
+      variables: {
+        id: id,
+        _set: {
+          first_name: firstName,
+          last_name: lastName
+        }
+      },    
+    }).then(() => {
+      setAlertMsg('Edit Name Success')
+      setShowAlert(true)
+      setModal('')
+      setTypeAlert('success')
+      setTimeout(() => window.location.reload(), 1500)
+    }).catch(() => {
+      setAlertMsg('Edit Name Failed')
+      setTypeAlert('error')
+      setShowAlert(true)
+    });     
+  }
+
+
+  const handlerEditPhone = (newNumber: string) => {
+    editP({
+      variables: {
+        pk_columns: {
+          number: lastPhone,
+          contact_id: idContact
+        },
+        new_phone_number: newNumber
+      },
+    }).then(() => {
+      setAlertMsg('Edit Phone Contact Success')
+      setShowAlert(true)
+      setModalP('')
+      setModal('')
+      setTypeAlert('success')
+      setTimeout(() => window.location.reload(), 1500)
+    }).catch(() => {
+      setAlertMsg('Failed Edit Phone Contact [Number Phone Must Be Unique]')
+      setTypeAlert('error')
+      setShowAlert(true)
+    });     
+  }
+
+  const handlerNewPhone =( data: string) =>{
+    setNewPhone(data)
+  }
+
   const hanlderAddData = (firstName: string, lastName: string, phones: Phone[]) => {
     addC({
       variables: {
@@ -244,7 +309,7 @@ export const Home = () => {
     }).then( () => {      
       setAlertMsg('Add Contact Success')
       setShowAlert(true)
-      setModal(false)
+      setModal('')
       setTypeAlert('success')
       setTimeout(() => window.location.reload(), 1500)
     }).catch(() => {      
@@ -269,13 +334,22 @@ export const Home = () => {
   };
 
   const addPhoneNumber = () => {
-    const newPhoneNumbers = [...phoneNumbers, {number: ''}];
+    const newPhoneNumbers = [...phoneNumbers, {
+      number: '', 
+      contact: {
+        first_name: '',
+        last_name: '',
+        id: 0
+      },
+}];
     setPhoneNumbers(newPhoneNumbers);
   };
 
 
   //stateComponent
-  const [modal, setModal] = useState(false);
+  const [modal, setModal] = useState('');
+  const [modalP, setModalP] = useState('');
+
   //requestData
   const [request, setRequest] = useState({
     where: {
@@ -287,19 +361,79 @@ export const Home = () => {
     limit: limitData,
     offset: offsetData,
     order_by: {
-      first_name: 'asc'
-    }
+      first_name: 'asc',
+      last_name: 'asc'
+    },
+    distinct_on: ["first_name", "last_name"],
   });
 
+  const [requestP, setRequestP] = useState({
+    where: {
+      contact: {
+        first_name: {
+          _like: 'A'
+        },
+        last_name: {
+          _like: 'A'
+        }
+      }
+    }
+  });
+  
   const [whereData, setWhereData] = useState({
     where: {
       _or: [
         { first_name: { _ilike: `%${searchData}%` } },
-        { last_name: { _ilike: `%${searchData}%` } },
-      ]
+        { last_name: { _ilike: `%${searchData}%` } },      ],         
     },
+    order_by: {
+      first_name: 'asc',
+      last_name: 'asc'
+    },
+    distinct_on: ["first_name", "last_name"],
+    
   });
 
+  //modalComponent
+  const handlerOpenAddModal = (modal:string) => {
+    setModal(modal)
+    setFirstName('')
+    setLastName('')
+    setPhoneNumbers([{
+      number: '',
+      contact: {
+      first_name: '',
+      last_name: '',
+      id: 0
+      },
+    }])
+  }
+
+  const handlerEditPhoneModal = (data: PhoneObj, modal: string) => {
+    setIDContact(data.contact.id)
+    setModalP(modal)
+    setLastPhone(data.number)
+  }
+
+  const handlerModalEditShow = (data:Contact, modal: string) => {
+    setModal(modal)
+    setID(data.id)
+    setFirstName(favFix(data.first_name))
+    setLastName(data.last_name)
+    setRequestP((prevRequest) => ({
+      ...prevRequest,
+      where: {
+        contact: {
+          first_name: {
+            _like: data.first_name
+          },
+          last_name: {
+            _like: data.last_name
+          }
+        }
+      }
+    }) )   
+  }
 
   const handleEditFavorite = (e: boolean) => {    
     setAlertMsg('Change Favorite Contact Success')
@@ -326,8 +460,10 @@ export const Home = () => {
       offset: offset,
       limit: limit,
       order_by: {
-        first_name: 'asc'
-      }
+        first_name: 'asc',
+        last_name: 'asc'
+      },     
+      distinct_on: ["first_name", "last_name"],
     }));
 
     setWhereData((prevRequest) => ({
@@ -339,12 +475,14 @@ export const Home = () => {
         ]
       },
       order_by: {
-        first_name: 'asc'
-      }
+        first_name: 'asc',
+        last_name: 'asc'
+      },
+      distinct_on: ["first_name", "last_name"],
     }));
   };
 
-  //modalComponent
+  
   //search
   const handleSearch = (keyword: string | number) => {
     setSearchData(keyword.toString());
@@ -384,7 +522,6 @@ export const Home = () => {
       localStorage.setItem('countPage', (countPage + 1).toString());
     }
 
-
     if (offset < 0) {
       setOffsetData(0);
       localStorage.setItem('offset', '0');
@@ -394,7 +531,7 @@ export const Home = () => {
 
   //api
   const { loading, data, error, count } = useGetContact(request, whereData);
-
+  const { loading:loadingP, data:dataP } = useGetPhoneList(requestP);
   //setLocal || getLocal
   useEffect(() => {
     if (!loading && data && count) {
@@ -412,7 +549,11 @@ export const Home = () => {
       setTimeout( ()=> setShowAlert(false), 500)
     }
 
-  }, [loading, data, error, count, showAlert]);
+    if (!loadingP && dataP) {
+      setPhoneNumbers(dataP.phone === null ? { phone: [] } : dataP.phone);      
+    }
+
+  }, [loading, data, error, count, showAlert,loadingP,dataP]);
 
   return (
     <Layout>
@@ -420,8 +561,46 @@ export const Home = () => {
       >
         <div>{alertMsg}</div>
       </Alert>
-      <Modal title='Add Contact' closeModal={e => setModal(e)} isOpen={modal}
-     
+      {/* edit-phone-modal */}
+      <Modal title='Edit Phone' closeModal={e => setModalP(e)} isOpen={modalP === 'phone'}
+        higherIndex={true}
+        content={<>
+          <div css={[isExpand, fullFlexCenter]}>
+            <RoundedContactStyle color={getColorFromName(firstName, '', lastName)} css={fullFlexCenter}>
+              {(getFirstNonSpaceCharacter(favFix(firstName)) || '').toLocaleUpperCase()}{(getFirstNonSpaceCharacter(lastName) || '').toLocaleUpperCase()}
+            </RoundedContactStyle>
+          </div>
+          <Input
+            type="text"
+            label='Last Phone Number'
+            value={lastPhone}
+            disabled={true}
+            regex={/^(?:\+62|0)[0-9]{9,13}$/}
+            errorMsg='Phonenumber Not Valid'
+            sendChange={(e) => console.log(e)}
+            placeHolder='New Phone Number' />
+          <Input
+            type="text"
+            label='New Phone'
+            value={newPhone}
+            regex={/^(?:\+62|0)[0-9]{9,13}$/}
+            errorMsg='Phonenumber Not Valid'
+            sendChange={(e) => handlerNewPhone(e.toString())}
+            placeHolder='New Phone Number' />
+
+        </>}
+        action={
+          <>
+            <ButtonStyle size='20%' color='secondary' radius='5px' content='20%' onClick={() => setModalP('')}> Cancel</ButtonStyle>
+            <ButtonStyle size='20%' color='primary' radius='5px' content='20%' onClick={() => handlerEditPhone(newPhone)}> Edit </ButtonStyle>
+          </>
+        } />
+
+
+
+
+      {/* add-modal */}
+      <Modal title='Add Contact' closeModal={e => setModal(e)} isOpen={modal === 'add'}     
         content={<>
         <div css={[isExpand, fullFlexCenter]}>
             <RoundedContactStyle color={getColorFromName(firstName, '', lastName)} css={fullFlexCenter}>
@@ -471,12 +650,58 @@ export const Home = () => {
         </>} 
         action = {
           <>        
-            <ButtonStyle size='20%' color='secondary' radius='5px' content='20%' onClick={() => setModal(!modal)}> Cancel</ButtonStyle>
+            <ButtonStyle size='20%' color='secondary' radius='5px' content='20%' onClick={() => setModal('')}> Cancel</ButtonStyle>
             <ButtonStyle size='20%' color='primary' radius='5px' content='20%' onClick={ ()=> hanlderAddData(firstName,lastName, phoneNumbers)}> Add </ButtonStyle>                 
           </>
-        }
+        }/>     
+
+      {/* edit-modal */}
+      <Modal title='Edit Contact' closeModal={e => setModal(e)} isOpen={modal === 'edit'}
         
-        />
+        content={<>         
+          <div css={[isExpand, fullFlexCenter]}>
+            <RoundedContactStyle color={getColorFromName(firstName, '', lastName)} css={fullFlexCenter}>
+              {(getFirstNonSpaceCharacter(favFix(firstName)) || '').toLocaleUpperCase()}{(getFirstNonSpaceCharacter(lastName) || '').toLocaleUpperCase()}
+            </RoundedContactStyle>
+          </div>
+          <ContainerInputName>
+            <Input
+              type="text"
+              label='First Name'
+              value={firstName}
+              regex={/^[A-Za-z\s]+$/}
+              errorMsg='Data is Required || Without Spescial Character'
+              sendChange={(e) => handlerFirstName(e.toString())}
+              placeHolder='First Name' />
+            <Input
+              label='Last Name'
+              type="text"
+              value={lastName}
+              regex={/^[A-Za-z\s]+$/}
+              errorMsg='Data is Required || Without Spescial Character'
+              sendChange={(e) => handlerLastName(e.toString())}
+              placeHolder='Last Name' />
+          </ContainerInputName>
+          {phoneNumbers.map((phoneNumber: PhoneObj, index: number) => (
+            <div key={index} onClick={() => handlerEditPhoneModal(phoneNumber,'phone')}>
+              <Input              
+                type="text"                           
+                label={`Phone ${index + 1}`}
+                regex={/^(?:\+62|0)[0-9]{9,13}$/}
+                errorMsg='Phonenumber Not Valid'                   
+                value={phoneNumber.number}
+                sendChange={(e) => handlePhoneChange(e, index)}
+                placeHolder={`Phone ${index + 1}`}
+              />
+            </div>
+          ))}
+        </>}
+        action={
+          <>
+            <ButtonStyle size='20%' color='secondary' radius='5px' content='20%' onClick={() => setModal('')}> Cancel</ButtonStyle>
+            <ButtonStyle size='20%' color='primary' radius='5px' content='20%' onClick={() => handlerEditData(firstName, lastName)}> Edit </ButtonStyle>
+          </>
+        } />
       <Container>        
         <ContentHeader>
           <Input
@@ -484,7 +709,7 @@ export const Home = () => {
             value={getSearchStorage()}
             sendChange={(e) => handleSearch(e)}
             placeHolder='Search Contact' />
-          <ButtonStyle size='20%' color='primary' radius='5px' content='20%' onClick={() => setModal(!modal)}> Add Contact</ButtonStyle>
+          <ButtonStyle size='20%' color='primary' radius='5px' content='20%' onClick={() => handlerOpenAddModal('add')}> Add Contact</ButtonStyle>
         </ContentHeader>
         {contactData.length <= 0 ?
           <EmptyDataStyle css={fullCenterColumn}>
@@ -496,7 +721,12 @@ export const Home = () => {
               const previousItem = index > 0 ? contactData[index - 1] : _c;
               return (
                 <div key={_c.id}>
-                  <PhoneList onDeleteContact={(e) => handlerDelete(e)} onMutationCompleted={(e) => handleEditFavorite(e)} item={_c} index={index} preItem={previousItem} randomColor={getColorFromName(_c.first_name, _c.phones[0]?.number, _c.last_name)} />
+                  <PhoneList 
+                    onEditContact={(e,d) => handlerModalEditShow(e,d)}
+                    onDeleteContact={(e) => handlerDelete(e)} 
+                    onMutationCompleted={(e) => handleEditFavorite(e)} 
+                    item={_c} index={index} preItem={previousItem} 
+                    randomColor={getColorFromName(_c.first_name, _c.phones[0]?.number, _c.last_name)} />
                 </div>
               );
             })}

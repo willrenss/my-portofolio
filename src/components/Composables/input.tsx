@@ -9,6 +9,8 @@ export interface InputProps {
     errorMsg?: '' | string
     sendChange: (data: number | string) => void
     placeHolder?: string
+    disabled?: boolean
+    readonly?: boolean
 }
 
 //style
@@ -57,7 +59,7 @@ const InputContainer = styled.div({
    flexDirection :'column',
    alignItems:'start'
 })
-const Input = ({ value, type, placeHolder, label, regex, errorMsg, sendChange}: InputProps) => {
+const Input = ({ value, type, placeHolder, label, regex, errorMsg, disabled, sendChange, readonly }: InputProps) => {
 
     const [inputValue, setInputValue] = useState('');
     const handlerData = (data:  number | string) => {        
@@ -70,8 +72,7 @@ const Input = ({ value, type, placeHolder, label, regex, errorMsg, sendChange}: 
         return regexTest?.test(char)
 
     }
-    return (
-       
+    return (       
         <InputContainer>
             {type == 'search' ? 
             <InputStyle
@@ -84,9 +85,11 @@ const Input = ({ value, type, placeHolder, label, regex, errorMsg, sendChange}: 
                 <LabelStyle>{label}</LabelStyle>
                 <InputStyle
                     type={type}
+                    disabled={disabled}
+                    readOnly={readonly}
                     value={value}
                     onChange={(e) => handlerData(e.target.value)}
-                    placeholder={placeHolder}
+                    placeholder={placeHolder}                    
                 />
                     {inputValue && !cekRegex(inputValue) ? <ErrorMsg>{errorMsg}</ErrorMsg> : <ErrorMsg></ErrorMsg>}
             </>         

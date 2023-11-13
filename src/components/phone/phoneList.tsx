@@ -20,6 +20,7 @@ export interface PhoneListProps {
     randomColor: string
     onMutationCompleted: (data: boolean) => void
     onDeleteContact: (data: boolean) => void
+    onEditContact: (data: Contact, modal: string) => void
 }
 
 //function
@@ -179,11 +180,17 @@ const openWhatsAppLink = (phoneNumber: string) => {
 
 
 //Component
-const PhoneList = ({ item, index, preItem, randomColor, onMutationCompleted, onDeleteContact }: PhoneListProps) => {
+const PhoneList = ({ item, index, preItem, randomColor, onMutationCompleted, onDeleteContact, onEditContact }: PhoneListProps) => {
 
     //handler
     const {editFav} = useEditContact({})
     const {deleteC} = useDeleteContact({})
+
+    const handlerEditContact = (item: Contact, modal: string) => {
+            
+        onEditContact(item, modal)
+    }
+
     const handleDelete = (id: number) => {
         deleteC({
             variables: {
@@ -265,7 +272,7 @@ const PhoneList = ({ item, index, preItem, randomColor, onMutationCompleted, onD
                         </div>
                     </NameContactStyle>                
                 <ButtonStyle color='success' lang='5px 0 0 5px' onClick={() => openWhatsAppLink(item.phones[0].number) } ><img src={phone} alt="SVG Image"/></ButtonStyle>
-                <ButtonStyle color='info' lang='0px'><img src={pencil} alt="SVG Image"/></ButtonStyle>
+                <ButtonStyle color='info' lang='0px' onClick={() => handlerEditContact(item,'edit')}><img src={pencil} alt="SVG Image"/></ButtonStyle>
                 <ButtonStyle color={!isFavorite(item.first_name) ? 'favorite' : 'neutral'} lang='0px' onClick={() => handleEditFavorite(isFavorite(item.first_name),item)}><img src={heart} alt="SVG Image" /></ButtonStyle>
                 <ButtonStyle color='error' lang='0 5px 5px 0' onClick={() => handleDelete(item.id)}><img src={trash} alt="SVG Image"/></ButtonStyle>                                  
             </ContactStyle>                

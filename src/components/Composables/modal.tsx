@@ -6,13 +6,15 @@ import close from '@/icons/close.svg';
 interface ModalProps {
     isOpen?: boolean;
     title?: string;
+    higherIndex?: boolean
     action?: React.ReactNode
     content?: React.ReactNode
-    closeModal: (data: boolean) => void
+    closeModal: (data: string) => void
 }
 
 interface ModalContainerProps {
     isOpen?: boolean
+    indexShow?: boolean
 }
 
 const ModalContainer = styled.div<ModalContainerProps>(
@@ -24,14 +26,14 @@ const ModalContainer = styled.div<ModalContainerProps>(
         left: 0,
         width: '100%',
         height: '100%',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        zIndex: 999,       
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',       
         flexDirection: 'column',        
         alignItems: 'center',
         transition: 'all 0.25s ease-out',
     },
     props => ({
         display: props.isOpen ? 'flex' : 'none',
+        zIndex: props.indexShow ? '1200' : '999'
     })
 );
 
@@ -117,19 +119,19 @@ const ModalAction = styled.div({
     },
 });
 
-const Modal = ({ isOpen, action, content, title, closeModal }: ModalProps) => {
-    const handlerModal = (data: boolean) => {
+const Modal = ({ isOpen, action, content, title, higherIndex,closeModal }: ModalProps) => {
+    const handlerModal = (data: string) => {
         closeModal(data); //sendData to Parent
-    };
+    };   
     return (
-        <ModalContainer isOpen={isOpen}>         
+        <ModalContainer isOpen={isOpen} indexShow={higherIndex}>         
                 <ModalHeader>                   
                     <IconButtonStyle 
                     size={20} 
                     minMax={10} 
                     color={'link'} 
                     radius='100%'
-                    onClick={() => handlerModal(!isOpen)}
+                    onClick={() => handlerModal('')}
                     >
                         <img src={close} alt="SVG Image" />
                     </IconButtonStyle>
