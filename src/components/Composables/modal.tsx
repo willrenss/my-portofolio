@@ -21,6 +21,7 @@ const ModalContainer = styled.div<ModalContainerProps>(
     {
         display: 'none',
         position: 'fixed',
+        overflow: 'auto',
         paddingTop: '100px',
         top: 0,
         left: 0,
@@ -30,6 +31,10 @@ const ModalContainer = styled.div<ModalContainerProps>(
         flexDirection: 'column',        
         alignItems: 'center',
         transition: 'all 0.25s ease-out',
+        [mq[2]]: {
+            paddingTop: '20px',
+            paddingBottom: '20px',
+        },
     },
     props => ({
         display: props.isOpen ? 'flex' : 'none',
@@ -74,6 +79,8 @@ const ModalContent = styled.div({
     padding: '15px 20px',
     borderRadius: '0px 0px 0px 0px',
     minWidth: '600px',
+    maxHeight: '500px', 
+    overflow:'auto',   
     boxSizing:'border-box',
     maxWidth: '600px',
     transition: 'all 0.25s ease-out',   
