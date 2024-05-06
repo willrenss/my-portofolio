@@ -63,13 +63,11 @@ const Home = () => {
 
   const postData = async () => {
     try {
-      // Send POST request with new player data
+    
       await axios.post('https://localhost:7004/api/Player', newPlayer);
 
-      // Fetch updated data
       fetchData();
 
-      // Reset input fields
       setNewPlayer({        
         name: '',
         age: 0,
