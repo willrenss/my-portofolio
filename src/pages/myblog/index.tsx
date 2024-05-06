@@ -5,7 +5,7 @@ const MyBlog = () => {
   return (
     <Layout>
       <div className='container-layout'>
-        my blog without params
+        MyBlog
       </div>
     </Layout>
 

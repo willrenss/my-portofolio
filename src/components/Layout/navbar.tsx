@@ -20,7 +20,7 @@ const Navbar = () => {
           scrollToElement('myprofile');
         }} className='flex ml-10'>
           <img src={logo} alt="" />
-          <p>Willou</p>
+          <p>Willrens</p>
         </div>
       </Link>
       <div className='menu-toggle' onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -63,7 +63,7 @@ const Navbar = () => {
         </li>
       </ul>
       <div className={`menu mr-10 ${isMenuOpen ? 'open animation-slide ptb-10' : ''}`}>
-        <Link to="/myblog">
+        <Link to="https://blog.willrens.com">
           <button className='primary-filled-btn plr-40 animation-child'>My Blog</button>
         </Link>
       </div>

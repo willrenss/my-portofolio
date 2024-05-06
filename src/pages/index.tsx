@@ -4,7 +4,7 @@ import Foto from '@/images/FotoProfile.png'
 
 import logo from '@/images/logo.png'
 const Home = () => {
-  const fileId = '1YWMrSLXV3SJHF9hUHJvDTJfz4ZKtCUvC';
+  const fileId = '1ci_2jRGNzjx8olZ-q2Hs2QAL0fFBWQpE';
   const fileUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
   const scrollToElement = (elementId: string) => {
     const element = document.getElementById(elementId);
@@ -23,7 +23,7 @@ const Home = () => {
               </div>
               <div className="txt-left mr-500">
                 <p className="isBold fz-40 txt-default mt-20">I'm William</p>
-                <p className="fw-500 fz-40 txt-secondaryS mt-20 typewriter"> A Software Engineer</p>
+                <p className="fw-500 fz-40 txt-secondaryS mt-20 typewriter"> A Software Developer</p>
                 <button className='primary-outlined-btn plr-40 mt-20 isBold' onClick={() => {
                   scrollToElement('about');
                 }}>About Me</button>
@@ -39,12 +39,11 @@ const Home = () => {
               <div className='p-20 columncenter-flex rd-ltlb-10 ht-300 wd-50-cent'>
                 <img className='square-300-max p-20' src={logo} alt="" />
               </div>
-              <div className='bg-gray-bg p-20 rd-rtrb-10 txt-secondaryS fw-500 txt-left center-flexColumn wd-600-max ht-300'>
+              <div className='bg-gray-bg p-20 rd-rtrb-10 txt-secondaryS fw-500 txt-left center-flexColumn wd-600-max ht-400'>
                 <p className='isBold fz-40 mb-10'>About Me</p>
-                Communication is my guiding principle in life, allowing me to understand individuals well and interact effectively. I have the
-                ability to adapt to various types of people and collaborate effectively, facilitating the exchange of ideas and perspectives. When
-                plans don't go as expected, I remain calm and tend to improvise. I am very enthusiastic about continuing to grow and gaining
-                new experiences.
+                Hello my name is William and I'm a dedicated freelance web developer at Solid Team, harnessing my skills in both front-end and backend engineering to the fullest. It's my pride to graduate from Atma Jaya Yogyakarta, where I not only excelled academically but also dived into several challenging freelance projects. Additionally, I've served as a coordinator for national events at UAJY and acted as an ambassador, showcasing our university's achievements to various high schools.
+                <br></br>
+                These experiences have enriched me with a solid foundation in both technical aspects of web development and soft skills. I'm not just proficient in coding but also possess qualities like perseverance and patience in making crucial decisions. I remain deeply enthusiastic about continually learning and advancing in my role.
                 <Link to={fileUrl}>
                   <button className='secondary-filled-btn plr-20 animation-child mt-20'>My Resume</button>
                 </Link>
