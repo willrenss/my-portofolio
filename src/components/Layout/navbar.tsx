@@ -5,19 +5,29 @@ const Navbar = () => {
   const [isActive, setIsActive] = useState('');
   const scrollToElement = (elementId: string) => {
     const element = document.getElementById(elementId);
-    setIsActive(elementId)
+
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      // Adjusting for the navbar height
+      const navbar = document.querySelector('.navbar') as HTMLElement | null;
+      if (navbar) {
+        // Adjusting for the navbar height
+        const navbarHeight = navbar?.offsetHeight;
+        const elementPosition = element.getBoundingClientRect().top;
+        const  offset = elementPosition - navbarHeight;
+
+        window.scrollBy({ top: offset, behavior: 'smooth' });
+      }
+      setIsActive(elementId);
     }
   };
 
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
-    <div className={`navbar ${isMenuOpen ? 'ht-100-max' : ''}`}>
+    <div id='navbar' className={`navbar ${isMenuOpen ? 'ht-100-max' : ''}`}>
       <Link to="/">
         <div onClick={() => {
-          scrollToElement('myprofile');
+          scrollToElement('top');
         }} className='flex ml-10'>
           <img src={logo} alt="" />
           <p>Willrens</p>
@@ -63,8 +73,12 @@ const Navbar = () => {
         </li>
       </ul>
       <div className={`menu mr-10 ${isMenuOpen ? 'open animation-slide ptb-10' : ''}`}>
-        <Link to="https://blog.willrens.com">
-          <button className='primary-filled-btn plr-40 animation-child'>My Blog</button>
+        <Link to="/myblog">
+          <button
+            onClick={() => {
+              scrollToElement('top');
+            }}
+           className='primary-filled-btn plr-40 animation-child'>My Blog</button>
         </Link>
       </div>
     </div>

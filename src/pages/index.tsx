@@ -1,20 +1,85 @@
 import { Link } from 'react-router-dom';
-import Layout from "../components/layout/layout";
+import Layout from "../components/Layout/layout";
 import Foto from '@/images/FotoProfile.png'
-
 import logo from '@/images/logo.png'
+import SkillCard from '../components/Layout/myskill';
+
+
+
 const Home = () => {
-  const fileId = '1ci_2jRGNzjx8olZ-q2Hs2QAL0fFBWQpE';
+  const fileId = '1SXPI-uNG_PmchkNVTpqr1HZsGHolQu03';
   const fileUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
+  const mySkill = [
+    {
+      name: 'Front End Developer',
+      languages: [
+        { name: 'HTML' },
+        { name: 'CSS' },
+        { name: 'SCSS' },
+        { name: 'JavaScript' },
+        { name: 'TypeScript' },
+        { name: 'Dart' },
+      ],
+      supports: [
+        { name: 'Figma' },
+        { name: 'Adobe Illustrator' },
+        { name: 'Adobe Illustrator' },
+      ],
+      tools: [
+        { name: 'Vite' },
+        { name: 'Axios' },
+        { name: 'Bootstrap, Tailwind, Bulma' },
+        { name: 'Eslint' },
+        { name: 'Vue JS' },
+        { name: 'React JS' },
+        { name: 'Flutter' },
+      ]
+    },
+    {
+      name: 'Back End Developer',
+      languages: [
+        { name: 'PHP' },
+        { name: 'JavaScript' },
+        { name: 'C#' },
+      ],
+      supports: [
+        { name: 'MySql' },
+        { name: 'Sql Server' }
+      ],
+      tools: [
+        { name: 'Postman' },
+        { name: 'Swagger' },
+        { name: 'Git, Github, Gitlab' },
+        { name: 'Terminal' },
+        { name: 'Laravel' },
+        { name: '.Net' },
+      ]
+    }
+  ];
+
   const scrollToElement = (elementId: string) => {
     const element = document.getElementById(elementId);
+
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      // Adjusting for the navbar height
+      const navbar = document.querySelector('.navbar') as HTMLElement | null;
+      if (navbar) {
+        // Adjusting for the navbar height
+        const navbarHeight = navbar?.offsetHeight;
+        const elementPosition = element.getBoundingClientRect().top;
+        const offset = elementPosition - navbarHeight;
+
+        window.scrollBy({ top: offset, behavior: 'smooth' });
+      }
     }
   };
+
+
+
+
   return (
     <Layout>
-      <section>
+      <section id='top'>
         <div id='myprofile' className='background-section-first'>
           <div className='container-layout fullCenter-flex'>
             <div className='fullCenter-flex isWrap home-layout'>
@@ -32,30 +97,44 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <section id='about'>
-        <div className='background-section-second'>
+      <section>
+        <div id='about' className='background-section-second'>
           <div className='container-layout-50 fullCenter-flex'>
-            <div className='fullCenter-flex resume wd-1000-max rd-10 '>
-              <div className='p-20 columncenter-flex rd-ltlb-10 ht-300 wd-50-cent'>
-                <img className='square-300-max p-20' src={logo} alt="" />
-              </div>
-              <div className='bg-gray-bg p-20 rd-rtrb-10 txt-secondaryS fw-500 txt-left center-flexColumn wd-600-max ht-400'>
-                <p className='isBold fz-40 mb-10'>About Me</p>
-                Hello my name is William and I'm a dedicated freelance web developer at Solid Team, harnessing my skills in both front-end and backend engineering to the fullest. It's my pride to graduate from Atma Jaya Yogyakarta, where I not only excelled academically but also dived into several challenging freelance projects. Additionally, I've served as a coordinator for national events at UAJY and acted as an ambassador, showcasing our university's achievements to various high schools.
-                <br></br>
-                These experiences have enriched me with a solid foundation in both technical aspects of web development and soft skills. I'm not just proficient in coding but also possess qualities like perseverance and patience in making crucial decisions. I remain deeply enthusiastic about continually learning and advancing in my role.
-                <Link to={fileUrl}>
-                  <button className='secondary-filled-btn plr-20 animation-child mt-20'>My Resume</button>
-                </Link>
+            <div className='flipper background-resume wd-1000-max rd-10 r-flex resume'>
+              <div className='fullCenter-flex resume-content'>
+                <div className='p-20 fullCenter-flex rd-ltlb-10 '>
+                  <img className='square-300-max p-20' src={logo} alt="" />
+                </div>
+                <div className='p-20 rd-rtrb-10 txt-secondaryS fw-500 txt-left center-flexColumn wd-600-max'>
+                  <h3 className='isBold fz-40 mb-10'>About Me</h3>
+                  <p className='fz-13 fw-500'>  Hello my name is William and I'm a dedicated freelance web developer at Solid Team,
+                    harnessing my skills in both front-end and backend engineering to the fullest.
+                    It's my pride to graduate from <a href='https://www.uajy.ac.id/' className='txt-link-nd txt-primary'> Atma Jaya Yogyakarta</a>, where I not only excelled academically but also dived into several challenging freelance projects. Additionally, I've served as a coordinator for national events at UAJY and acted as an ambassador, showcasing our university's achievements to various high schools.
+                  </p>                
+                  <p className='fz-13  fw-500'>
+                    These experiences have enriched me with a solid foundation in both technical aspects of web development and soft skills. I'm not just proficient in coding but also possess qualities like perseverance and patience in making crucial decisions. I remain deeply enthusiastic about continually learning and advancing in my role
+                  </p>
+                  <button className='secondary-filled-btn plr-20 animation-child mt-20'>
+                    <Link className='txt-link-nd' to={fileUrl}>
+                      My Resume
+                    </Link>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
-      <section id='skill'>
-        <div className='background-section-third'>
+      <section>
+        <div id='skill' className='background-section-third'>
           <div className='container-layout'>
-
+            <p className='fz-80 txt-center txt-primary isBold '>My Skill</p>
+            <p className='txt-center isBold txt-secondaryS mt-10 fw-400'>Here are some of my skills that i have learn until now</p>
+            <div className='fullCenter-flexColumn isWrap'>
+            {mySkill.map((skill, index) => (
+              <SkillCard key={index} skill={skill} />
+            ))}
+            </div>
           </div>
         </div>
       </section>
@@ -76,5 +155,7 @@ const Home = () => {
     </Layout>
   );
 };
+
+
 
 export default Home;
