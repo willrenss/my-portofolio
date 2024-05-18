@@ -55,14 +55,14 @@ const Navbar = () => {
           }}>
           Skills
         </li>
-        <li className={`menu isClickAble animation-child 
+        {/* <li className={`menu isClickAble animation-child 
           ${isMenuOpen ? 'open animation-slide' : ''}  
           ${isActive === 'project' ? 'txt-secondaryS' : 'txt-default'} `}
           onClick={() => {
             scrollToElement('project');
           }}>
           Projects
-        </li>
+        </li> */}
         <li className={`menu isClickAble animation-child 
           ${isMenuOpen ? 'open animation-slide' : ''}  
           ${isActive === 'contact' ? 'txt-secondaryS' : 'txt-default'} `}
